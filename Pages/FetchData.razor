@@ -1,0 +1,51 @@
+﻿@page "/fetchdata"
+@using BlazorReduxApp.Data
+@inherits MyAppComponent
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NavigationManager
+@inject WeatherForecastService ForecastService
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (State.Forecasts == null)
+{
+   <p><em>Loading...</em></p>
+   @Handle();
+}
+else
+{
+   <table class="table">
+      <thead>
+         <tr>
+            <th>Date</th>
+            <th>Temp. (C)</th>
+            <th>Temp. (F)</th>
+            <th>Summary</th>
+         </tr>
+      </thead>
+      <tbody>
+         @foreach (var forecast in State.Forecasts)
+         {
+            <tr>
+               <td>@forecast.Date.ToShortDateString()</td>
+               <td>@forecast.TemperatureC</td>
+               <td>@forecast.TemperatureF</td>
+               <td>@forecast.Summary</td>
+            </tr>
+         }
+      </tbody>
+   </table>
+   <button onclick="Handle">Reload weather</button>
+}
+
+@code
+{
+
+   private async Task Handle()
+   {
+      await ActionCreators.LoadWeather(Store.Dispatch, HttpClientFactory, NavigationManager.BaseUri);
+   }
+
+}

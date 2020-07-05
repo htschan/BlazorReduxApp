@@ -1,0 +1,28 @@
+
+@using BlazorReduxApp.Data
+@inherits MyAppComponent
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NavigationManager
+@ReduxDevTools
+
+<Router AppAssembly="@typeof(Program).Assembly">
+   <Found Context="routeData">
+      <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+   </Found>
+   <NotFound>
+      <LayoutView Layout="@typeof(MainLayout)">
+         <p>Sorry, there's nothing at this address.</p>
+      </LayoutView>
+   </NotFound>
+</Router>
+
+@functions
+{
+
+   protected override async Task OnInitializedAsync()
+   {
+      await ActionCreators.LoadWeather(Store.Dispatch, HttpClientFactory, NavigationManager.BaseUri);
+      await base.OnInitializedAsync();
+   }
+
+}
